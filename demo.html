@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TxBattle - Bitcoin Transaction Guesser</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        background: 'hsl(222, 84%, 4.9%)',
+                        foreground: 'hsl(210, 40%, 98%)',
+                        bitcoin: 'hsl(32, 94%, 43%)',
+                        electric: 'hsl(221, 83%, 53%)',
+                        border: 'hsl(217, 32%, 17%)',
+                        muted: 'hsl(217, 32%, 17%)',
+                        'muted-foreground': 'hsl(215, 20%, 65%)',
+                        card: 'hsl(222, 84%, 4.9%)',
+                    },
+                    fontFamily: {
+                        mono: ['JetBrains Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
+        
+        body {
+            background: hsl(222, 84%, 4.9%);
+            color: hsl(210, 40%, 98%);
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #f7931a 0%, #3b82f6 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .card {
+            background: hsl(222, 84%, 4.9%);
+            border: 1px solid hsl(217, 32%, 17%);
+            border-radius: 8px;
+            padding: 1.5rem;
+            backdrop-filter: blur(10px);
+        }
+        
+        .button {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        
+        .button-primary {
+            background: linear-gradient(135deg, #f7931a 0%, #3b82f6 100%);
+            color: white;
+        }
+        
+        .button-outline {
+            background: transparent;
+            border: 1px solid hsl(217, 32%, 17%);
+            color: hsl(210, 40%, 98%);
+        }
+        
+        .input {
+            background: hsl(222, 84%, 4.9%);
+            border: 1px solid hsl(217, 32%, 17%);
+            border-radius: 6px;
+            padding: 0.75rem;
+            color: hsl(210, 40%, 98%);
+            font-family: inherit;
+            width: 100%;
+        }
+        
+        .bitcoin-icon {
+            color: #f7931a;
+        }
+        
+        .countdown {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: bold;
+            font-size: 2rem;
+            color: #3b82f6;
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // Mock data for the demo
+        const mockBlocks = [
+            { height: 870234, tx_count: 3247, size: 1.2, timestamp: Date.now() - 300000 },
+            { height: 870233, tx_count: 2891, size: 1.1, timestamp: Date.now() - 900000 },
+            { height: 870232, tx_count: 3156, size: 1.3, timestamp: Date.now() - 1500000 },
+        ];
+
+        const mockLeaderboard = [
+            { id: 1, username: "BitcoinMaster", avatar: "🏆", score: 2450, accuracy: 89, streak: 12 },
+            { id: 2, username: "CryptoGuru", avatar: "💎", score: 2180, accuracy: 85, streak: 8 },
+            { id: 3, username: "BlockExplorer", avatar: "🚀", score: 1950, accuracy: 82, streak: 5 },
+            { id: 4, username: "SatoshiFan", avatar: "⚡", score: 1720, accuracy: 78, streak: 3 },
+        ];
+
+        function LiveBlockDisplay() {
+            const [currentBlock, setCurrentBlock] = useState(mockBlocks[0]);
+            const [timeLeft, setTimeLeft] = useState(600);
+
+            useEffect(() => {
+                const timer = setInterval(() => {
+                    setTimeLeft(prev => prev > 0 ? prev - 1 : 600);
+                }, 1000);
+                return () => clearInterval(timer);
+            }, []);
+
+            const formatTime = (seconds) => {
+                const mins = Math.floor(seconds / 60);
+                const secs = seconds % 60;
+                return `${mins}:${secs.toString().padStart(2, '0')}`;
+            };
+
+            return (
+                <div className="card">
+                    <div className="flex items-center gap-3 mb-4">
+                        <span className="bitcoin-icon text-2xl">₿</span>
+                        <h3 className="text-lg font-semibold">Current Block</h3>
+                    </div>
+                    
+                    <div className="space-y-4">
+                        <div>
+                            <div className="text-sm text-gray-400 mb-1">Block Height</div>
+                            <div className="text-2xl font-bold gradient-text">#{currentBlock.height}</div>
+                        </div>
+                        
+                        <div>
+                            <div className="text-sm text-gray-400 mb-1">Next Block In</div>
+                            <div className="countdown pulse">{formatTime(timeLeft)}</div>
+                        </div>
+                        
+                        <div className="grid grid-cols-2 gap-4 pt-4 border-t border-gray-700">
+                            <div>
+                                <div className="text-sm text-gray-400">Last TX Count</div>
+                                <div className="text-lg font-semibold">{currentBlock.tx_count}</div>
+                            </div>
+                            <div>
+                                <div className="text-sm text-gray-400">Block Size</div>
+                                <div className="text-lg font-semibold">{currentBlock.size} MB</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        function PredictionInput() {
+            const [prediction, setPrediction] = useState('');
+            const [submitted, setSubmitted] = useState(false);
+            const [confidence, setConfidence] = useState(50);
+
+            const handleSubmit = () => {
+                if (prediction && !submitted) {
+                    setSubmitted(true);
+                    // In real app, would submit to backend
+                    setTimeout(() => setSubmitted(false), 3000);
+                }
+            };
+
+            return (
+                <div className="card">
+                    <h3 className="text-lg font-semibold mb-4">Make Your Prediction</h3>
+                    
+                    <div className="space-y-4">
+                        <div>
+                            <label className="text-sm text-gray-400 block mb-2">
+                                Transaction Count Prediction
+                            </label>
+                            <input
+                                type="number"
+                                className="input"
+                                placeholder="e.g., 3250"
+                                value={prediction}
+                                onChange={(e) => setPrediction(e.target.value)}
+                                disabled={submitted}
+                            />
+                        </div>
+                        
+                        <div>
+                            <label className="text-sm text-gray-400 block mb-2">
+                                Confidence: {confidence}%
+                            </label>
+                            <input
+                                type="range"
+                                min="1"
+                                max="100"
+                                value={confidence}
+                                onChange={(e) => setConfidence(e.target.value)}
+                                className="w-full"
+                                disabled={submitted}
+                            />
+                        </div>
+                        
+                        <button
+                            onClick={handleSubmit}
+                            disabled={!prediction || submitted}
+                            className={`button w-full ${submitted ? 'button-outline' : 'button-primary'}`}
+                        >
+                            {submitted ? 'Prediction Submitted!' : 'Submit Prediction'}
+                        </button>
+                        
+                        {submitted && (
+                            <div className="text-sm text-green-400 text-center">
+                                ⚡ Prediction locked in! Good luck!
+                            </div>
+                        )}
+                    </div>
+                </div>
+            );
+        }
+
+        function GameLeaderboard() {
+            return (
+                <div className="card">
+                    <h3 className="text-lg font-semibold mb-4">🏆 Leaderboard</h3>
+                    
+                    <div className="space-y-3">
+                        {mockLeaderboard.map((player, index) => (
+                            <div key={player.id} className="flex items-center justify-between p-3 bg-gray-800/50 rounded-lg">
+                                <div className="flex items-center gap-3">
+                                    <span className="text-lg">{index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `#${index + 1}`}</span>
+                                    <div className="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center">
+                                        {player.avatar}
+                                    </div>
+                                    <div>
+                                        <div className="font-medium">{player.username}</div>
+                                        <div className="text-sm text-gray-400">{player.accuracy}% accuracy</div>
+                                    </div>
+                                </div>
+                                <div className="text-right">
+                                    <div className="font-semibold text-bitcoin">{player.score}</div>
+                                    <div className="text-sm text-gray-400">🔥 {player.streak}</div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+        }
+
+        function PlayerStats() {
+            const stats = {
+                totalPredictions: 47,
+                accuracy: 73,
+                currentStreak: 5,
+                bestStreak: 12,
+                points: 1890,
+                rank: 8
+            };
+
+            return (
+                <div className="card">
+                    <h3 className="text-lg font-semibold mb-4">📊 Your Stats</h3>
+                    
+                    <div className="grid grid-cols-2 gap-4">
+                        <div className="text-center p-3 bg-gray-800/50 rounded-lg">
+                            <div className="text-2xl font-bold text-bitcoin">{stats.accuracy}%</div>
+                            <div className="text-sm text-gray-400">Accuracy</div>
+                        </div>
+                        
+                        <div className="text-center p-3 bg-gray-800/50 rounded-lg">
+                            <div className="text-2xl font-bold text-electric">{stats.currentStreak}</div>
+                            <div className="text-sm text-gray-400">Current Streak</div>
+                        </div>
+                        
+                        <div className="text-center p-3 bg-gray-800/50 rounded-lg">
+                            <div className="text-2xl font-bold text-green-400">{stats.points}</div>
+                            <div className="text-sm text-gray-400">Total Points</div>
+                        </div>
+                        
+                        <div className="text-center p-3 bg-gray-800/50 rounded-lg">
+                            <div className="text-2xl font-bold text-purple-400">#{stats.rank}</div>
+                            <div className="text-sm text-gray-400">Global Rank</div>
+                        </div>
+                    </div>
+                    
+                    <div className="mt-4 p-3 bg-gray-800/50 rounded-lg">
+                        <div className="text-sm text-gray-400 mb-2">Achievement Progress</div>
+                        <div className="flex justify-between items-center">
+                            <span className="text-sm">Perfect Predictor</span>
+                            <span className="text-sm text-gray-400">8/10</span>
+                        </div>
+                        <div className="w-full bg-gray-700 rounded-full h-2 mt-1">
+                            <div className="bg-gradient-to-r from-bitcoin to-electric h-2 rounded-full" style={{width: '80%'}}></div>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        function TxBattleApp() {
+            return (
+                <div className="min-h-screen p-4">
+                    <div className="max-w-6xl mx-auto space-y-6">
+                        {/* Header */}
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-4">
+                                <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-bitcoin to-electric flex items-center justify-center">
+                                    <span className="text-white font-bold text-lg">₿</span>
+                                </div>
+                                <h1 className="text-3xl font-bold gradient-text">TxBattle</h1>
+                            </div>
+                            <div className="text-sm text-gray-400 font-mono">
+                                🔴 LIVE • Block 870,234
+                            </div>
+                        </div>
+
+                        {/* Game Interface */}
+                        <div className="grid lg:grid-cols-3 gap-6">
+                            {/* Left Column */}
+                            <div className="space-y-6">
+                                <LiveBlockDisplay />
+                                <PredictionInput />
+                            </div>
+
+                            {/* Right Columns */}
+                            <div className="lg:col-span-2 space-y-6">
+                                <div className="grid md:grid-cols-2 gap-6">
+                                    <GameLeaderboard />
+                                    <PlayerStats />
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Footer */}
+                        <div className="text-center py-8 border-t border-gray-700">
+                            <p className="text-sm text-gray-400">
+                                High-tech Bitcoin transaction guessing game • Powered by mempool.space
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        ReactDOM.render(<TxBattleApp />, document.getElementById('root'));
+    </script>
+</body>
+</html>
