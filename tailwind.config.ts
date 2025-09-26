@@ -16,6 +16,23 @@ export default {
         foreground: "hsl(var(--foreground) / <alpha-value>)",
         border: "hsl(var(--border) / <alpha-value>)",
         input: "hsl(var(--input) / <alpha-value>)",
+        // Bitcoin-themed colors for game
+        bitcoin: {
+          DEFAULT: "hsl(25 100% 50%)",
+          foreground: "hsl(0 0% 98%)",
+        },
+        electric: {
+          DEFAULT: "hsl(200 100% 60%)",
+          foreground: "hsl(220 20% 8%)",
+        },
+        success: {
+          DEFAULT: "hsl(120 50% 45%)",
+          foreground: "hsl(0 0% 98%)",
+        },
+        danger: {
+          DEFAULT: "hsl(0 85% 60%)",
+          foreground: "hsl(0 0% 98%)",
+        },
         card: {
           DEFAULT: "hsl(var(--card) / <alpha-value>)",
           foreground: "hsl(var(--card-foreground) / <alpha-value>)",
