@@ -1,25 +1,18 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
-    <title>TX Battle - Farcaster Mini App</title>
-    <meta name="description" content="Make predictions and battle other players in real-time TX Battle game on Farcaster" />
-    
-    <!-- Farcaster Mini App Meta Tags -->
-    <meta name="fc:miniapp" content='{"version":"1","imageUrl":"https://tx-battle.netlify.app/og-image.png","button":{"title":"Play TX Battle","action":{"type":"launch_miniapp","url":"https://tx-battle.netlify.app/"}}}' />
-    <meta property="og:title" content="TX Battle - Farcaster Mini App" />
-    <meta property="og:description" content="Make predictions and battle other players in real-time TX Battle game" />
-    <meta property="og:image" content="https://tx-battle.netlify.app/og-image.png" />
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite + React + TS</title>
+
+    <!-- Farcaster MiniApp embed metadata (single-line JSON inside content) -->
+    <meta name="fc:miniapp" content='{"version":"1","imageUrl":"https://resplendent-beijinho-4de455.netlify.app/vite.svg","button":{"title":"🎮 Play","action":{"type":"launch_frame","name":"Tx Battle","url":"https://resplendent-beijinho-4de455.netlify.app/","splashImageUrl":"https://resplendent-beijinho-4de455.netlify.app/vite.svg","splashBackgroundColor":"#0d0d0d"}}}' />
+    <!-- Legacy fallback for older clients -->
+    <meta name="fc:frame" content='{"version":"1","imageUrl":"https://resplendent-beijinho-4de455.netlify.app/vite.svg","button":{"title":"🎮 Play","action":{"type":"launch_frame","name":"Tx Battle","url":"https://resplendent-beijinho-4de455.netlify.app/","splashImageUrl":"https://resplendent-beijinho-4de455.netlify.app/vite.svg","splashBackgroundColor":"#0d0d0d"}}}' />
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
-    <!-- This is a replit script which adds a banner on the top of the page when opened in development mode outside the replit environment -->
-    <script type="text/javascript" src="https://replit.com/public/js/replit-dev-banner.js"></script>
   </body>
 </html>
