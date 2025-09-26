@@ -1,0 +1,17 @@
+{
+  "miniapp": {
+    "version": "1",
+    "name": "TX Battle",
+    "iconUrl": "https://tx-battle.replit.app/favicon.ico",
+    "homeUrl": "https://tx-battle.replit.app/",
+    "imageUrl": "https://tx-battle.replit.app/og-image.png",
+    "buttonTitle": "Play TX Battle",
+    "splashImageUrl": "https://tx-battle.replit.app/splash.png",
+    "splashBackgroundColor": "#1a1a2e",
+    "requiredChains": ["eip155:8453"],
+    "requiredCapabilities": [
+      "actions.signIn",
+      "actions.ready"
+    ]
+  }
+}
