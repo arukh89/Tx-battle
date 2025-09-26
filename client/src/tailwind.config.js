@@ -1,11 +1,28 @@
 /** @type {import('tailwindcss').Config} */
-export default {
+module.exports = {
   content: [
     "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}"
+    "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        border: "#e5e7eb",   // ✅ fix: definisi warna border
+        background: "#ffffff",
+        foreground: "#111827",
+        primary: {
+          DEFAULT: "#3b82f6",
+          foreground: "#ffffff",
+        },
+        secondary: {
+          DEFAULT: "#6b7280",
+          foreground: "#ffffff",
+        },
+      },
+      borderColor: {
+        DEFAULT: "#e5e7eb",
+      },
+    },
   },
   plugins: [],
 }
