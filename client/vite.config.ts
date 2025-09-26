@@ -1,9 +1,11 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// https://vitejs.dev/config/
+// Vite config diperbaiki agar build output konsisten dan dev proxy ke backend Replit.
+// Perubahan ini minimal: menetapkan base ./, outDir 'dist', dan proxy '/api' untuk dev.
 export default defineConfig({
   plugins: [react()],
+  base: './',
   build: {
     outDir: 'dist',
   },
